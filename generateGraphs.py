@@ -29,7 +29,9 @@ print options
 colours = [1, 2, 4, 6, 8, 13, 15]
 styles = [1, 2, 4, 3, 5, 1, 1]
 
-gencut = 'gen_e1_pt > 5. && gen_e2_pt > 5. && abs(gen_e1_eta) < 2.4 && abs(gen_e2_eta) < 2.4'
+gencut = 'gen_e1_pt > 5. && gen_e2_pt > 5. && abs(gen_e1_eta) < 2.4 && abs(gen_e2_eta) < 2.4'   # github default
+#gencut = 'gen_e1_pt > 5. && gen_e2_pt > 5. && abs(gen_e1_eta) < 1.5 && abs(gen_e2_eta) < 1.5'   # yuta's talk
+#gencut = 'gen_e1_pt > 0.5 && gen_e2_pt > 0.5 && abs(gen_e1_eta) < 1.5 && abs(gen_e2_eta) < 1.5' # 2018
 #gencut = '1'
 
 q2cut = '1.1 < gen_mass*gen_mass && gen_mass*gen_mass < 6.25'
