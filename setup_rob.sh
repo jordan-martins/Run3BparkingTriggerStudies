@@ -1,4 +1,4 @@
-cd ~/work/CMSSW_11_1_3/src
+cd ../CMSSW_11_1_3/src
 cmstools
 cmsenv
 cd -
