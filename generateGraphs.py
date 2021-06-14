@@ -1,6 +1,5 @@
 import copy, math, os
 from numpy import array
-#from CMGTools.H2TauTau.proto.plotter.categories_TauMu import cat_Inc
 from ROOT import TFile, TH1F, TH2F, TTree, gROOT, gStyle, TCanvas, TColor, kLightTemperature, TGraphErrors, Double
 from DisplayManager import DisplayManager, add_Preliminary, add_CMS, add_label
 from officialStyle import officialStyle
@@ -39,7 +38,6 @@ print 'gencut = ', gencut
 
 eff_histo = None
 if options.weight:
-    #eff_file = TFile('root/trigger_efficiency.root')
     eff_file = TFile('root/eff.root')
     eff_histo = eff_file.Get('eff')
     print eff_histo, 'detected'
