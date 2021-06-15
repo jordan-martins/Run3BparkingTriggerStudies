@@ -7,24 +7,15 @@ def addOverflows(his):
     xbins = his.GetXaxis().GetNbins()
     ybins = his.GetYaxis().GetNbins()
     entries = his.GetEntries()
-    contents = 0
-    overflows = 0
     for xbin in range(1,xbins+1):
         content = his.GetBinContent(xbin,ybins)
         outlier = his.GetBinContent(xbin,ybins+1)
-        contents += content
-        overflows += outlier
         his.SetBinContent(xbin,ybins,content+outlier)
         his.SetBinContent(xbin,ybins+1,0.)
-        #print "overflows: ",xbin,content,outlier,his.GetBinContent(xbin,ybins)
     content = his.GetBinContent(xbin,ybins)
     outlier = his.GetBinContent(xbins+1,ybins+1)
-    contents += content
-    overflows += outlier
     his.SetBinContent(xbins,ybins,content+outlier)
     his.SetBinContent(xbins+1,ybins+1,0.)
-    #print "outlier: ",xbins,content,outlier,his.GetBinContent(xbins,ybins)
-    #print "entries: ",entries," overflows: ",overflows
     his.SetEntries(entries)
     return his
 
@@ -80,6 +71,14 @@ eff_histo.Write()
 numer_canvas = TCanvas()
 numer_canvas = createPdf(numer_histo,numer_canvas,eff=False)
 numer_canvas.SaveAs("plots/numer.pdf")
+
+numer_canvas1 = TCanvas()
+numer_canvas1 = createPdf(numer_histo1,numer_canvas1,eff=False)
+numer_canvas1.SaveAs("plots/numer1.pdf")
+
+numer_canvas2 = TCanvas()
+numer_canvas2 = createPdf(numer_histo2,numer_canvas2,eff=False)
+numer_canvas2.SaveAs("plots/numer2.pdf")
 
 denom_canvas = TCanvas()
 denom_canvas = createPdf(denom_histo,denom_canvas,eff=False)
