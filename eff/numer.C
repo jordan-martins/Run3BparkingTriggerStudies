@@ -1,5 +1,8 @@
 { 
 
+//  TFile f("root/francesca.root");
+//  TTree* t = (TTree*)f.Get("TaPtree");
+  
   TChain* t = new TChain("TaPtree");
   t->Add("/eos/cms/store/group/phys_bphys/cavalari/skimbig/BuToKee_v2_noreg_0_10.root");
   t->Add("/eos/cms/store/group/phys_bphys/cavalari/skimbig/BuToKee_v2_noreg_100_110.root");
@@ -81,28 +84,26 @@
   t->Add("/eos/cms/store/group/phys_bphys/cavalari/skimbig/BuToKee_v2_noreg_80_90.root");
   t->Add("/eos/cms/store/group/phys_bphys/cavalari/skimbig/BuToKee_v2_noreg_90_100.root");
 
-//  TFile f("root/francesca.root");
-//  TTree* t = (TTree*)f.Get("TaPtree");
-  std::cout << "entries: " << t->GetEntries() << std::endl;
+  std::cout << "entries: " << t->GetEntries() << std::endl; // entries: TTree = 17050, TChain = 3137854
+
+  std::string sel = "bmatchMC==1 && analysisBdtO > 8. && (mll_fullfit*mll_fullfit)>1.1 && (mll_fullfit*mll_fullfit)<6.25";
   
   TH2F numer_reco("numer_reco","numer_reco",10, 0. ,10.,10, 0. ,10.);
-  int n1 = t->Draw("tag_pt:probe_pt>>numer_reco","bmatchMC==1 && analysisBdtO > 8. && mll_fullfit>1.1 && mll_fullfit<6.25","goff");
-  //int n1 = t->Draw("tag_pt:probe_pt>>numer_reco","bmatchMC==1","goff");
+  int n1 = t->Draw("tag_pt:probe_pt>>numer_reco",sel.c_str(),"goff");
   std::cout << "processed: " << n1 << std::endl;
 
   TH2F numer_gen_all("numer_gen_all","numer_gen_all",10, 0. ,10.,10, 0. ,10.);
-  int n2 = t->Draw("tag_ptMc:probe_ptMc>>numer_gen_all","bmatchMC==1 && analysisBdtO > 8. && mll_fullfit>1.1 && mll_fullfit<6.25","goff");
-  //int n2 = t->Draw("tag_ptMc:probe_ptMc>>numer_gen_all","bmatchMC==1","goff");
+  int n2 = t->Draw("tag_ptMc:probe_ptMc>>numer_gen_all",sel.c_str(),"goff");
   std::cout << "processed: " << n2 << std::endl;
-  
+
+  std::string sel1 = "tag_ptMc>=probe_ptMc && " + sel;
   TH2F numer_gen_lead("numer_gen_lead","numer_gen_lead",10, 0. ,10.,10, 0. ,10.);
-  int n3 = t->Draw("tag_ptMc:probe_ptMc>>numer_gen_lead","tag_ptMc>=probe_ptMc && bmatchMC==1 && analysisBdtO > 8. && mll_fullfit>1.1 && mll_fullfit<6.25","goff");
-  //int n3 = t->Draw("tag_ptMc:probe_ptMc>>numer_gen_lead","tag_ptMc>=probe_ptMc && bmatchMC==1","goff");
+  int n3 = t->Draw("tag_ptMc:probe_ptMc>>numer_gen_lead",sel1.c_str(),"goff");
   std::cout << "processed: " << n3 << std::endl;
-  
+
+  std::string sel2 = "tag_ptMc<probe_ptMc && " + sel;
   TH2F numer_gen_sub("numer_gen_sub","numer_gen_sub",10, 0. ,10.,10, 0. ,10.);
-  int n4 = t->Draw("probe_ptMc:tag_ptMc>>numer_gen_sub","tag_ptMc<probe_ptMc && bmatchMC==1 && analysisBdtO > 8. && mll_fullfit>1.1 && mll_fullfit<6.25","goff");
-  //int n4 = t->Draw("probe_ptMc:tag_ptMc>>numer_gen_sub","tag_ptMc<probe_ptMc && bmatchMC==1","goff");
+  int n4 = t->Draw("probe_ptMc:tag_ptMc>>numer_gen_sub",sel2.c_str(),"goff");
   std::cout << "processed: " << n4 << std::endl;
   
   TFile fw("root/numer.root","RECREATE");
