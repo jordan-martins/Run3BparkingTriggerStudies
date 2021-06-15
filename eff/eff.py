@@ -37,6 +37,8 @@ def createPdf(his,canvas,eff=True):
 
 # numer
 print "numer"
+files_available = 79.
+files_processed = 77.
 numer_file = TFile('root/numer.root')
 numer_histo1 = numer_file.Get('numer_gen_lead')
 numer_histo2 = numer_file.Get('numer_gen_sub')
@@ -44,6 +46,7 @@ numer_histo = numer_histo1.Clone("numer")
 numer_histo.Add(numer_histo2)
 numer_histo = addOverflows(numer_histo)
 numer_histo.SetTitle("numer")
+numer_histo.Scale(files_available/files_processed)
 
 # denom
 print "denom"
