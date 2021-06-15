@@ -86,7 +86,11 @@
 
   std::cout << "entries: " << t->GetEntries() << std::endl; // entries: TTree = 17050, TChain = 3137854
 
-  std::string sel = "bmatchMC==1 && analysisBdtO > 8. && (mll_fullfit*mll_fullfit)>1.1 && (mll_fullfit*mll_fullfit)<6.25";
+  std::string sel;
+  sel += "bmatchMC==1";                                                         // GEN-match to signal
+  sel += " && abs(k_svip3d) > 0.06 && fit_Bcos2D > 0.95";                       // Analysis pre-selection
+  sel += " && analysisBdtO > 8.";                                               // Analysis BT cut
+  sel += " && (mll_fullfit*mll_fullfit)>1.1 && (mll_fullfit*mll_fullfit)<6.25"; // Low q2 requirement
   
   TH2F numer_reco("numer_reco","numer_reco",13, 0. ,13.,13, 0. ,13.);
   int n1 = t->Draw("tag_pt:probe_pt>>numer_reco",sel.c_str(),"goff");
