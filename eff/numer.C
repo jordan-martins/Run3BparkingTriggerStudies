@@ -48,7 +48,7 @@
   t->Add("/eos/cms/store/group/phys_bphys/cavalari/skimbig/BuToKee_v2_noreg_460_470.root");
   t->Add("/eos/cms/store/group/phys_bphys/cavalari/skimbig/BuToKee_v2_noreg_470_480.root");
   t->Add("/eos/cms/store/group/phys_bphys/cavalari/skimbig/BuToKee_v2_noreg_480_490.root");
-  t->Add("/eos/cms/store/group/phys_bphys/cavalari/skimbig/BuToKee_v2_noreg_490_500.root");
+  //t->Add("/eos/cms/store/group/phys_bphys/cavalari/skimbig/BuToKee_v2_noreg_490_500.root");
   t->Add("/eos/cms/store/group/phys_bphys/cavalari/skimbig/BuToKee_v2_noreg_500_510.root");
   t->Add("/eos/cms/store/group/phys_bphys/cavalari/skimbig/BuToKee_v2_noreg_50_60.root");
   t->Add("/eos/cms/store/group/phys_bphys/cavalari/skimbig/BuToKee_v2_noreg_510_520.root");
@@ -88,7 +88,7 @@
 
   std::string sel;
   sel += "bmatchMC==1";                                                         // GEN-match to signal
-  sel += " && abs(k_svip3d) > 0.06 && fit_Bcos2D > 0.95";                       // Analysis pre-selection
+  sel += " && abs(k_svip3d) < 0.06 && fit_Bcos2D > 0.95";                       // Analysis pre-selection
   sel += " && analysisBdtO > 8.";                                               // Analysis BT cut
   sel += " && (mll_fullfit*mll_fullfit)>1.1 && (mll_fullfit*mll_fullfit)<6.25"; // Low q2 requirement
   
