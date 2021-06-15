@@ -28,12 +28,11 @@ styles = [1, 2, 4, 3, 5, 1, 1]
 
 gen_pt  = 'gen_e1_pt > 0.5 && gen_e2_pt > 0.5'
 gen_eta = 'abs(gen_e1_eta) < 2.4 && abs(gen_e2_eta) < 2.4'
-gen_q2  = '(gen_mass*gen_mass) > 1.1 && (gen_mass*gen_mass) < 6.25'
+#gen_q2  = '(gen_mass*gen_mass) > 1.1 && (gen_mass*gen_mass) < 6.25'
 
-if options.q2 =='high':
-    gen_q2 = 'gen_mass*gen_mass > 14.82'
+#if options.q2 =='high': gen_q2 = 'gen_mass*gen_mass > 14.82'
 
-gencut = ' && '.join([gen_pt, gen_eta, gen_q2])
+gencut = ' && '.join([gen_pt, gen_eta]) #, gen_q2]) # don't apply gen_ q2 req.
 print 'gencut = ', gencut
 
 eff_histo = None
@@ -74,6 +73,9 @@ def fillGraph(tree, type, sel, gencut, graph, ipt, pt):
         den = Double(tree.GetEntries(sel))
         num = Double(tree.GetEntries(sel + ' && ' + gencut))
 
+    if type=='eff': 
+        num = Double(tree.GetEntries(sel))
+
     if type=='ult': 
         if not options.weight:
             num = Double(tree.GetEntries(sel + ' && ' + gencut))
@@ -93,7 +95,7 @@ def fillGraph(tree, type, sel, gencut, graph, ipt, pt):
                     if ybin < ybins : gen_e1_pt += ' && ' + 'gen_e1_pt < ' + str(y_up)
                     gen_e2_pt = 'gen_e2_pt > ' + str(x_down)
                     if xbin < xbins : gen_e2_pt += ' && ' + 'gen_e2_pt < ' + str(x_up)
-                    newgencut = ' && '.join([gen_e1_pt, gen_e2_pt, gen_eta, gen_q2])
+                    newgencut = ' && '.join([gen_e1_pt, gen_e2_pt, gen_eta])
                     entry = Double(tree.GetEntries(sel + ' && ' + newgencut))
                     num += entry*eff
                 
