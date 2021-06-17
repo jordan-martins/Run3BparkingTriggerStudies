@@ -1,26 +1,21 @@
 import copy, math, os
 from numpy import array
-#from CMGTools.H2TauTau.proto.plotter.categories_TauMu import cat_Inc
 from ROOT import TFile, TH1F, TH2F, TTree, gROOT, gStyle, TCanvas, TColor, kLightTemperature, TLegend, TGraph, Double
 from DisplayManager import DisplayManager, add_Preliminary, add_CMS, add_label, applyLegendSettings
 from officialStyle import officialStyle
 from array import array
-
 
 gROOT.SetBatch(True)
 officialStyle(gStyle)
 gStyle.SetOptTitle(0)
 gStyle.SetOptStat(0)
 
-
 from optparse import OptionParser, OptionValueError
 usage = "usage: python runTauDisplay_BsTauTau.py"
 parser = OptionParser(usage)
-
 parser.add_option("-t", "--type", default='ult', type="string", help="type [rate, eff, anal, ult]", dest="type")
-
+parser.add_option('-w', '--weight', action="store_true", default=False, dest='weight')
 (options, args) = parser.parse_args()
-
 
 def draw(name, xtitle, ytitle, graphs, y_min, y_max, option='rt'):
 
@@ -48,8 +43,6 @@ def draw(name, xtitle, ytitle, graphs, y_min, y_max, option='rt'):
     leg.Draw()
     can.SaveAs('plots/' + name + '.pdf')
     can.SaveAs('plots/' + name + '.gif')
-
-
 
 def returnGraph(name, eff, rate):
     graph = TGraph()
@@ -326,12 +319,19 @@ canvas.SetLogx()
 canvas.SetGridx()
 canvas.SetGridy()
 
-frame_roc = TH2F('frame', 'frame', 100, 0.0000005, 0.001, 1000, 1000, 30000000)
+frame_roc = None
+if options.type == 'ult' and options.weight: 
+    frame_roc = TH2F('frame', 'frame', 100, 0.0000005, 0.001, 1000, 1000, 30000000)
+else : 
+    frame_roc = TH2F('frame', 'frame', 100, 0.00003, 0.1, 1000, 1000, 30000000)
 
 if options.type == 'eff':
-    frame_roc.GetXaxis().SetTitle('Efficiency')
+    frame_roc.GetXaxis().SetTitle('L1 Trigger efficiency')
 elif options.type == 'ult':
-    frame_roc.GetXaxis().SetTitle('L1 Trigger efficiency x Signal acc.')
+    if options.weight:
+        frame_roc.GetXaxis().SetTitle('L1 Trigger efficiency x Signal Acc. x Eff.')
+    else :
+        frame_roc.GetXaxis().SetTitle('L1 Trigger efficiency x Signal Acc.')
 
 frame_roc.GetYaxis().SetTitle('Rate @ 1E34')
 frame_roc.Draw()
