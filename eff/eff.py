@@ -54,6 +54,7 @@ DAS_entries = 31585558.
 denom_file = TFile('root/denom.root')
 denom_histo = denom_file.Get('denom')
 denom_histo = addOverflows(denom_histo)
+denom_histo2 = denom_histo.Clone("denom_unweighted")
 denom_histo.Scale(DAS_entries/denom_histo.GetEntries())
 
 # eff
@@ -86,6 +87,10 @@ numer_canvas2.SaveAs("plots/numer2.pdf")
 denom_canvas = TCanvas()
 denom_canvas = createPdf(denom_histo,denom_canvas,eff=False)
 denom_canvas.SaveAs("plots/denom.pdf")
+
+denom_canvas2 = TCanvas()
+denom_canvas2 = createPdf(denom_histo2,denom_canvas2,eff=False)
+denom_canvas2.SaveAs("plots/denom_unweighted.pdf")
 
 eff_canvas = TCanvas()
 eff_canvas = createPdf(eff_histo,eff_canvas)
