@@ -91,22 +91,24 @@
   sel += " && abs(k_svip3d) < 0.06 && fit_Bcos2D > 0.95";                       // Analysis pre-selection
   sel += " && analysisBdtO > 8.";                                               // Analysis BT cut
   sel += " && (mll_fullfit*mll_fullfit)>1.1 && (mll_fullfit*mll_fullfit)<6.25"; // Low q2 requirement
+
+  nbins = 13
   
-  TH2F numer_reco("numer_reco","numer_reco",13, 0. ,13.,13, 0. ,13.);
+  TH2F numer_reco("numer_reco","numer_reco",nbins, 0. ,nbins*1., nbins, 0. ,nbins*1.);
   int n1 = t->Draw("tag_pt:probe_pt>>numer_reco",sel.c_str(),"goff");
   std::cout << "processed: " << n1 << std::endl;
 
-  TH2F numer_gen_all("numer_gen_all","numer_gen_all",13, 0. ,13.,13, 0. ,13.);
+  TH2F numer_gen_all("numer_gen_all","numer_gen_all",nbins, 0. ,nbins*1., nbins, 0. ,nbins*1.);
   int n2 = t->Draw("tag_ptMc:probe_ptMc>>numer_gen_all",sel.c_str(),"goff");
   std::cout << "processed: " << n2 << std::endl;
 
   std::string sel1 = "tag_ptMc>=probe_ptMc && " + sel;
-  TH2F numer_gen_lead("numer_gen_lead","numer_gen_lead",13, 0. ,13.,13, 0. ,13.);
+  TH2F numer_gen_lead("numer_gen_lead","numer_gen_lead",nbins, 0. ,nbins*1., nbins, 0. ,nbins*1.);
   int n3 = t->Draw("tag_ptMc:probe_ptMc>>numer_gen_lead",sel1.c_str(),"goff");
   std::cout << "processed: " << n3 << std::endl;
 
   std::string sel2 = "tag_ptMc<probe_ptMc && " + sel;
-  TH2F numer_gen_sub("numer_gen_sub","numer_gen_sub",13, 0. ,13.,13, 0. ,13.);
+  TH2F numer_gen_sub("numer_gen_sub","numer_gen_sub",nbins, 0. ,nbins*1., nbins, 0. ,nbins*1.);
   int n4 = t->Draw("probe_ptMc:tag_ptMc>>numer_gen_sub",sel2.c_str(),"goff");
   std::cout << "processed: " << n4 << std::endl;
   
