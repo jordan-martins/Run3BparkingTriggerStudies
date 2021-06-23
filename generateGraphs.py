@@ -18,6 +18,7 @@ parser = OptionParser(usage)
 parser.add_option("-t", "--type", default='ult', type="string", help="type [rate, eff, anal, ult]", dest="type")
 parser.add_option('-w', '--weight', action="store_true", default=False, dest='weight')
 parser.add_option("-q", "--q2", default='low', type="string", help="q2 [low, high]", dest="q2")
+parser.add_option("-p", "--plot", action="store_true", default=False, dest="plot")
 
 (options, args) = parser.parse_args()
 
@@ -155,5 +156,68 @@ graph_DoubleE_dR.Write()
 for graph in graphs_MuE:
     graph.Write()
 
+#############
+
+def createPdf(his,canvas):
+    canvas.cd()
+    his.Draw("TEXT COLZ")
+    his.SetStats(0)
+    his.GetXaxis().SetTitle("gen_e2_pt")
+    his.GetYaxis().SetTitle("gen_e1_pt")
+    gStyle.SetPaintTextFormat(".0f");
+    his.SetMinimum(0.1)
+    his.SetMarkerSize(1.)
+    canvas.SetLogz()
+    return canvas
+
+def plotGenPtDistrAfterTrigger(tree) :
+
+    nbins = 13
+    #
+    mu_histo = TH2F("mu_histo","mu_histo",nbins,0.,nbins*1.,nbins,0.,nbins*1.) 
+    sel = "singleMu9==1"
+    entry = tree.Draw("gen_e1_pt:gen_e2_pt>>mu_histo",sel,"goff")
+    mu_canvas = TCanvas()
+    mu_canvas = createPdf(mu_histo,mu_canvas)
+    mu_canvas.SaveAs("plots/ele_pt1_pt2_mu9.pdf")
+    #
+    me_histo = TH2F("me_histo","me_histo",nbins,0.,nbins*1.,nbins,0.,nbins*1.) 
+    sel = 'singleMu4==1 && (e1_pt >= 8. || e2_pt >= 8.)'
+    entry = tree.Draw("gen_e1_pt:gen_e2_pt>>me_histo",sel,"goff")
+    me_canvas = TCanvas()
+    me_canvas = createPdf(me_histo,me_canvas)
+    me_canvas.SaveAs("plots/ele_pt1_pt2_m4e8.pdf")
+    #
+    ee_histo = TH2F("ee_histo","ee_histo",nbins,0.,nbins*1.,nbins,0.,nbins*1.) 
+    sel = 'doubleE8==1'
+    entry = tree.Draw("gen_e1_pt:gen_e2_pt>>ee_histo",sel,"goff")
+    ee_canvas = TCanvas()
+    ee_canvas = createPdf(ee_histo,ee_canvas)
+    ee_canvas.SaveAs("plots/ele_pt1_pt2_ee8.pdf")
+    
+    #
+    mu_histo1 = TH2F("mu_histo1","mu_histo",nbins,0.,nbins*1.,nbins,0.,nbins*1.) 
+    sel = "singleMu6==1"
+    entry = tree.Draw("gen_e1_pt:gen_e2_pt>>mu_histo1",sel,"goff")
+    mu_canvas1 = TCanvas()
+    mu_canvas1 = createPdf(mu_histo1,mu_canvas1)
+    mu_canvas1.SaveAs("plots/ele_pt1_pt2_mu6.pdf")
+    #
+    me_histo1 = TH2F("me_histo1","me_histo",nbins,0.,nbins*1.,nbins,0.,nbins*1.) 
+    sel = 'singleMu4==1 && (e1_pt >= 4. || e2_pt >= 4.)'
+    entry = tree.Draw("gen_e1_pt:gen_e2_pt>>me_histo1",sel,"goff")
+    me_canvas1 = TCanvas()
+    me_canvas1 = createPdf(me_histo1,me_canvas1)
+    me_canvas1.SaveAs("plots/ele_pt1_pt2_m4e4.pdf")
+    #
+    ee_histo1 = TH2F("ee_histo1","ee_histo",nbins,0.,nbins*1.,nbins,0.,nbins*1.) 
+    sel = 'doubleE6==1'
+    entry = tree.Draw("gen_e1_pt:gen_e2_pt>>ee_histo1",sel,"goff")
+    ee_canvas1 = TCanvas()
+    ee_canvas1 = createPdf(ee_histo1,ee_canvas1)
+    ee_canvas1.SaveAs("plots/ele_pt1_pt2_ee6.pdf")
+
+if options.type != 'rate' and options.plot : plotGenPtDistrAfterTrigger(tree)
+    
 out.Write()
 out.Close()
