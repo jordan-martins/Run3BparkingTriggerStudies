@@ -16,7 +16,8 @@ usage = "usage: python runTauDisplay_BsTauTau.py"
 parser = OptionParser(usage)
 
 parser.add_option("-t", "--type", default='ult', type="string", help="type [rate, eff, anal, ult]", dest="type")
-parser.add_option('-w', '--weight', action="store_true", default=False, dest='weight')
+parser.add_option("-l", "--lumi", default=1, type="float", help="target lumi. with [E34]" dest="lumi")
+parser.add_option('-w', '--weight', action="store_true", default=True, dest='weight')
 parser.add_option("-q", "--q2", default='low', type="string", help="q2 [low, high]", dest="q2")
 parser.add_option("-p", "--plot", action="store_true", default=False, dest="plot")
 
@@ -63,54 +64,61 @@ def createGraph(name):
     return copy.deepcopy(graph)
 
 
-def fillGraph(tree, type, sel, gencut, graph, ipt, pt):
+def fillGraph(rootfile, type, fitname, sel, gencut, graph, ipt, pt):
 
-    sf = Double(1.)
 
-    den = Double(tree.GetEntries())
-    num = Double(tree.GetEntries(sel))
+    
+#    sf = Double(1.)
 
-    if type=='anal': 
-        den = Double(tree.GetEntries(sel))
-        num = Double(tree.GetEntries(sel + ' && ' + gencut))
+    if type!='rate':
+        tree = rootfile.Get('tree')
 
-    if type=='eff': 
+        den = Double(tree.GetEntries())
         num = Double(tree.GetEntries(sel))
 
-    if type=='ult': 
-        if not options.weight:
+        if type=='anal': 
+            den = Double(tree.GetEntries(sel))
             num = Double(tree.GetEntries(sel + ' && ' + gencut))
-        else:
-            num = 0
-            ybins = eff_histo.GetYaxis().GetNbins()
-            xbins = eff_histo.GetXaxis().GetNbins()
-            for ybin in range(1,ybins+1):
-                for xbin in range(1,xbins+1):
-                    if xbin > ybin : continue
-                    eff = eff_histo.GetBinContent(xbin,ybin)
-                    y_down = eff_histo.GetYaxis().GetBinLowEdge(ybin)
-                    y_up = eff_histo.GetYaxis().GetBinLowEdge(ybin) + eff_histo.GetYaxis().GetBinWidth(ybin)
-                    x_down = eff_histo.GetXaxis().GetBinLowEdge(xbin)
-                    x_up = eff_histo.GetXaxis().GetBinLowEdge(xbin) + eff_histo.GetXaxis().GetBinWidth(xbin)
-                    gen_e1_pt = 'gen_e1_pt > ' + str(y_down)
-                    if ybin < ybins : gen_e1_pt += ' && ' + 'gen_e1_pt < ' + str(y_up)
-                    gen_e2_pt = 'gen_e2_pt > ' + str(x_down)
-                    if xbin < xbins : gen_e2_pt += ' && ' + 'gen_e2_pt < ' + str(x_up)
-                    newgencut = ' && '.join([gen_e1_pt, gen_e2_pt, gen_eta])
-                    entry = Double(tree.GetEntries(sel + ' && ' + newgencut))
-                    num += entry*eff
+
+        if type=='eff': 
+            num = Double(tree.GetEntries(sel))
+
+        if type=='ult': 
+            if not options.weight:
+                num = Double(tree.GetEntries(sel + ' && ' + gencut))
+            else:
+                num = 0
+                ybins = eff_histo.GetYaxis().GetNbins()
+                xbins = eff_histo.GetXaxis().GetNbins()
+                for ybin in range(1,ybins+1):
+                    for xbin in range(1,xbins+1):
+                        if xbin > ybin : continue
+                        eff = eff_histo.GetBinContent(xbin,ybin)
+                        y_down = eff_histo.GetYaxis().GetBinLowEdge(ybin)
+                        y_up = eff_histo.GetYaxis().GetBinLowEdge(ybin) + eff_histo.GetYaxis().GetBinWidth(ybin)
+                        x_down = eff_histo.GetXaxis().GetBinLowEdge(xbin)
+                        x_up = eff_histo.GetXaxis().GetBinLowEdge(xbin) + eff_histo.GetXaxis().GetBinWidth(xbin)
+                        gen_e1_pt = 'gen_e1_pt > ' + str(y_down)
+                        if ybin < ybins : gen_e1_pt += ' && ' + 'gen_e1_pt < ' + str(y_up)
+                        gen_e2_pt = 'gen_e2_pt > ' + str(x_down)
+                        if xbin < xbins : gen_e2_pt += ' && ' + 'gen_e2_pt < ' + str(x_up)
+                        newgencut = ' && '.join([gen_e1_pt, gen_e2_pt, gen_eta])
+                        entry = Double(tree.GetEntries(sel + ' && ' + newgencut))
+                        num += entry*eff
                 
-    print '-'*80
-    eff, efferr = calc(graph.GetName(), num, den)
+        print '-'*80
+        eff, efferr = calc(graph.GetName(), num, den)
 
     if type == 'rate':
-        sf = Double(2544*11200/1.8)
-
-    graph.SetPoint(ipt, pt, eff*sf)
-    graph.SetPointError(ipt, 0, efferr*sf)
+#        sf = Double(2544*11200/1.8)
+        eff = rootfile.Get(fitname + '_fit').Eval(options.lumi)
+        efferr = 0
+        
+    graph.SetPoint(ipt, pt, eff)
+    graph.SetPointError(ipt, 0, efferr)
 
 ensureDir('plots/')
-file2read = 'root/genstudy_l1.root'
+file2read = 'root/genstudy_l1_signal_2574files_607052events.root'
 
 
 if options.type == 'rate':
@@ -118,7 +126,7 @@ if options.type == 'rate':
 
 sfile = TFile(file2read)
 
-tree = sfile.Get('tree')
+#tree = sfile.Get('tree')
 
 hists = []
 titles = []
@@ -129,25 +137,71 @@ graph_singleMu = createGraph('singleMu')
 
 for ipt, pt in enumerate(ptrange):
     sel = 'singleMu' + str(pt) + '==1'
-    if options.type=='rate':
-        sel = 'mu1_pt >= ' + str(pt)
-    fillGraph(tree, options.type, sel, gencut, graph_singleMu, ipt, pt)
+    fillGraph(sfile, options.type, 'singleMu' + str(pt), sel, gencut, graph_singleMu, ipt, pt)
 
 graphs_MuE = []
-for ipt_mu, pt_mu in enumerate(ptrange):
+for ipt_mu, pt_mu in enumerate([4]):
     graph_MuE = createGraph('Mu' + str(pt_mu))
     for ipt_e, pt_e in enumerate(ptrange):
         sel = 'singleMu' + str(pt_mu) + '==1 && (e1_pt >= ' + str(pt_e) + ' || e2_pt >= ' + str(pt_e) + ') '
-        if options.type=='rate':
-            sel = 'mu1_pt >= ' + str(pt_mu) + '&& e1_pt >=' + str(pt_e)
-        fillGraph(tree, options.type, sel, gencut, graph_MuE, ipt_e, pt_e)
+#        if options.type=='rate':
+#            sel = 'mu1_pt >= ' + str(pt_mu) + '&& e1_pt >=' + str(pt_e)
+        fillGraph(sfile, options.type, 'mu' + str(pt_mu) +'_eg' + str(pt_e), sel, gencut, graph_MuE, ipt_e, pt_e)
     graphs_MuE.append(graph_MuE)
+
 
 graph_DoubleE_dR = createGraph('DoubleE_dR')
 for ipt_e, pt_e in enumerate(ptrange):
-    sel = 'doubleE' + str(pt_e) + '==1'
-    fillGraph(tree, options.type, sel, gencut, graph_DoubleE_dR, ipt_e, pt_e)
+#    sel = 'doubleE' + str(pt_e) + '==1'
+    sel = 'e1_ex_pt >= ' + str(pt_e) + ' && e2_ex_pt >=' + str(pt_e) + ' && e1e2_ex_dr >=0 && e1e2_ex_dr <= 1 && '
+    fillGraph(sfile, options.type, 'DoubleE' + str(pt_e), sel, gencut, graph_DoubleE_dR, ipt_e, pt_e)
 
+
+
+graphs_MuEE = []
+for ipt_mu, pt_mu in enumerate([4]):
+    graph_MuEE = createGraph('MuEE_mu' + str(pt_mu))
+    for ipt_e, pt_e in enumerate(ptrange):
+        sel = 'singleMu' + str(pt_mu) + '==1 && e1_ex1p5_pt >= ' + str(pt_e) + ' && e2_ex1p5_pt >= ' + str(pt_e) + ') '
+#        if options.type=='rate':
+#            sel = 'mu1_pt >= ' + str(pt_mu) + '&& e1_pt >=' + str(pt_e)
+        fillGraph(sfile, options.type, 'mu' + str(pt_mu) +'_DoubleE_eta1p5_' + str(pt_e), sel, gencut, graph_MuE, ipt_e, pt_e)
+
+
+        
+    graphs_MuEE.append(graph_MuEE)
+
+
+
+graphs_asymEE = []
+for ipt1, pt_e1 in enumerate([7,8,9,10]):
+    graph_asymEE = createGraph('asym_E' + str(pt_e1))
+    for ipt2, pt_e2 in enumerate([3,4,5,6,7,8,9,10]):
+        
+        if ipt2 >= ipt1: continue
+
+#        sel = 'singleMu' + str(pt_e1) + '==1 && e1_ex1p5_pt >= ' + str(pt_e) + ' && e2_ex1p5_pt >= ' + str(pt_e) + ') '
+#        if options.type=='rate':
+        sel = '((e1_ex_pt >= ' + str(pt_e1) + ' && e2_ex_pt >=' + str(pt_e2) + ') || (e1_ex_pt >=' + str(pt_e2) + ' && e2_ex_pt >=' + str(pt_e1) + ')) && e1e2_ex_dr >=0 && e1e2_ex_dr <= 1'
+        fillGraph(sfile, options.type, 'E' + str(pt_e1) +'_E' + str(pt_e2), sel, gencut, graph_MuE, ipt_e, pt_e)
+
+
+        
+    graphs_MuE.append(graph_MuE)
+
+
+    
+
+
+    
+
+#for ipt_e, pt_e in enumerate(ptrange):
+#    sel = 'doubleE' + str(pt_e) + '==1'
+#    sel = 'e1_ex_pt >= ' + str(pt_e) + ' && e2_ex_pt >=' + str(pt_e) + ' && e1e2_ex_dr >=0 && e1e2_ex_dr <= 1 && '
+#    fillGraph(sfile, options.type, 'DoubleE' + str(pt_e), sel, gencut, graph_DoubleE_dR, ipt_e, pt_e)
+
+
+    
 out = TFile('plot_' + options.type + '.root', 'recreate')
 
 graph_singleMu.Write()
@@ -156,6 +210,13 @@ graph_DoubleE_dR.Write()
 for graph in graphs_MuE:
     graph.Write()
 
+for graph in graphs_MuEE:
+    graph.Write()
+
+for graph in graphs_asymEE:
+    graph.Write()
+        
+    
 #############
 
 def createPdf(his,canvas):

@@ -283,6 +283,28 @@ for ii, vkey in enumerate(['DoubleE_dR']):
 
 
 
+graphs_MuEE = []
+for ipt_mu, pt_mu in enumerate([4]):
+        
+    eff_MuEE = sfile_eff.Get('MuEE_mu' + pt_mu)
+    rate_MuEE = sfile_rate.Get('MuEE_mu' + pt_mu)
+
+    graph_MuEE = returnGraph('MuEE_mu' + pt_mu, eff_MuEE, rate_MuEE)
+    
+    graphs_MuEE.append(graph_MuEE)
+
+
+graphs_asymEE = []
+for ipt1, pt_e1 in enumerate([7,8,9,10]):
+    eff_asymEE = sfile_eff.Get('asym_E' + str(pt_e1))
+    rate_asymEE = sfile_rate.Get('asym_E' + str(pt_e1))
+
+    graph_asymEE = returnGraph('asym_E' + pt_e1, eff_asymEE, rate_asymEE)
+    
+
+    graphs_asymEE.append(graph_asymEE)
+    
+
 #if options.type == 'eff':
 #
 #    ytitle = 'Efficiency'
@@ -376,6 +398,28 @@ for graph in graphs_DoubleE_dR:
     leg.AddEntry(graph, 'Double e (p_{T} #geq X GeV, #eta < 1.0) + dR < 1', 'lep')
 
 
+for graph in graphs_MuEE:
+    graph.SetLineColor(6)
+    graph.SetMarkerColor(4)
+    graph.SetMarkerStyle(24)
+    graph.SetMarkerSize(1)
+    graph.Write()
+    graph.Draw('plsame')
+    leg.AddEntry(graph, 'mu (p_{T} #geq 4 GeV, #eta < 1.5) + ee (p_{T} #geq X GeV, #eta < 1.0)', 'lep')
+
+
+for graph in graphs_asymEE:
+    graph.SetLineColor(6)
+    graph.SetMarkerColor(4)
+    graph.SetMarkerStyle(24)
+    graph.SetMarkerSize(1)
+    graph.Write()
+    graph.Draw('plsame')
+    leg.AddEntry(graph, 'e1 (p_{T} #geq X GeV, #eta < 1.0) + e2 (p_{T} #geq Y GeV, #eta < 1.0), dR < 1', 'lep')
+
+
+
+    
 leg.Draw()
 canvas.SaveAs('plots/roc_' + options.type + '.pdf')
 ofile.Write()
