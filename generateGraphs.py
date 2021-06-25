@@ -16,7 +16,7 @@ usage = "usage: python runTauDisplay_BsTauTau.py"
 parser = OptionParser(usage)
 
 parser.add_option("-t", "--type", default='ult', type="string", help="type [rate, eff, anal, ult]", dest="type")
-parser.add_option("-l", "--lumi", default=1, type="float", help="target lumi. with [E34]" dest="lumi")
+parser.add_option("-l", "--lumi", default=1, type="float", help="target lumi. with [E34]", dest="lumi")
 parser.add_option('-w', '--weight', action="store_true", default=True, dest='weight')
 parser.add_option("-q", "--q2", default='low', type="string", help="q2 [low, high]", dest="q2")
 parser.add_option("-p", "--plot", action="store_true", default=False, dest="plot")
@@ -122,7 +122,7 @@ file2read = 'root/genstudy_l1_signal_2574files_607052events.root'
 
 
 if options.type == 'rate':
-    file2read = 'root/rate_322079_L1p8.root'
+    file2read = 'root/ratedict.root'
 
 sfile = TFile(file2read)
 
