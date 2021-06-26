@@ -139,21 +139,21 @@ for ipt, pt in enumerate(ptrange):
     sel = 'singleMu' + str(pt) + '==1'
     fillGraph(sfile, options.type, 'singleMu' + str(pt), sel, gencut, graph_singleMu, ipt, pt)
 
+
 graphs_MuE = []
 for ipt_mu, pt_mu in enumerate([4]):
     graph_MuE = createGraph('Mu' + str(pt_mu))
     for ipt_e, pt_e in enumerate(ptrange):
         sel = 'singleMu' + str(pt_mu) + '==1 && (e1_pt >= ' + str(pt_e) + ' || e2_pt >= ' + str(pt_e) + ') '
-#        if options.type=='rate':
-#            sel = 'mu1_pt >= ' + str(pt_mu) + '&& e1_pt >=' + str(pt_e)
+
         fillGraph(sfile, options.type, 'mu' + str(pt_mu) +'_eg' + str(pt_e), sel, gencut, graph_MuE, ipt_e, pt_e)
     graphs_MuE.append(graph_MuE)
 
 
 graph_DoubleE_dR = createGraph('DoubleE_dR')
 for ipt_e, pt_e in enumerate(ptrange):
-#    sel = 'doubleE' + str(pt_e) + '==1'
-    sel = 'e1_ex_pt >= ' + str(pt_e) + ' && e2_ex_pt >=' + str(pt_e) + ' && e1e2_ex_dr >=0 && e1e2_ex_dr <= 1 && '
+
+    sel = 'e1_ex_pt >= ' + str(pt_e) + ' && e2_ex_pt >=' + str(pt_e) + ' && e1e2_ex_dr >=0 && e1e2_ex_dr <= 1'
     fillGraph(sfile, options.type, 'DoubleE' + str(pt_e), sel, gencut, graph_DoubleE_dR, ipt_e, pt_e)
 
 
@@ -162,10 +162,9 @@ graphs_MuEE = []
 for ipt_mu, pt_mu in enumerate([4]):
     graph_MuEE = createGraph('MuEE_mu' + str(pt_mu))
     for ipt_e, pt_e in enumerate(ptrange):
-        sel = 'singleMu' + str(pt_mu) + '==1 && e1_ex1p5_pt >= ' + str(pt_e) + ' && e2_ex1p5_pt >= ' + str(pt_e) + ') '
-#        if options.type=='rate':
-#            sel = 'mu1_pt >= ' + str(pt_mu) + '&& e1_pt >=' + str(pt_e)
-        fillGraph(sfile, options.type, 'mu' + str(pt_mu) +'_DoubleE_eta1p5_' + str(pt_e), sel, gencut, graph_MuE, ipt_e, pt_e)
+        sel = 'singleMu' + str(pt_mu) + '==1 && e1_ex1p5_pt >= ' + str(pt_e) + ' && e2_ex1p5_pt >= ' + str(pt_e)
+
+        fillGraph(sfile, options.type, 'mu' + str(pt_mu) +'_DoubleE_eta1p5_' + str(pt_e), sel, gencut, graph_MuEE, ipt_e, pt_e)
 
 
         
@@ -178,16 +177,16 @@ for ipt1, pt_e1 in enumerate([7,8,9,10]):
     graph_asymEE = createGraph('asym_E' + str(pt_e1))
     for ipt2, pt_e2 in enumerate([3,4,5,6,7,8,9,10]):
         
-        if ipt2 >= ipt1: continue
+        if pt_e2 >= pt_e1: continue
 
-#        sel = 'singleMu' + str(pt_e1) + '==1 && e1_ex1p5_pt >= ' + str(pt_e) + ' && e2_ex1p5_pt >= ' + str(pt_e) + ') '
-#        if options.type=='rate':
+#        print ipt1, ipt2, pt_e1, pt_e2
+
         sel = '((e1_ex_pt >= ' + str(pt_e1) + ' && e2_ex_pt >=' + str(pt_e2) + ') || (e1_ex_pt >=' + str(pt_e2) + ' && e2_ex_pt >=' + str(pt_e1) + ')) && e1e2_ex_dr >=0 && e1e2_ex_dr <= 1'
-        fillGraph(sfile, options.type, 'E' + str(pt_e1) +'_E' + str(pt_e2), sel, gencut, graph_MuE, ipt_e, pt_e)
+        fillGraph(sfile, options.type, 'E' + str(pt_e1) +'_E' + str(pt_e2), sel, gencut, graph_asymEE, ipt2, pt_e2)
 
 
         
-    graphs_MuE.append(graph_MuE)
+    graphs_asymEE.append(graph_asymEE)
 
 
     

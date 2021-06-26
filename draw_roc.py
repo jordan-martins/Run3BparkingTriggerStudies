@@ -14,7 +14,7 @@ from optparse import OptionParser, OptionValueError
 usage = "usage: python runTauDisplay_BsTauTau.py"
 parser = OptionParser(usage)
 parser.add_option("-t", "--type", default='ult', type="string", help="type [rate, eff, anal, ult]", dest="type")
-parser.add_option('-w', '--weight', action="store_true", default=False, dest='weight')
+parser.add_option('-w', '--weight', action="store_true", default=True, dest='weight')
 (options, args) = parser.parse_args()
 
 def draw(name, xtitle, ytitle, graphs, y_min, y_max, option='rt'):
@@ -286,10 +286,10 @@ for ii, vkey in enumerate(['DoubleE_dR']):
 graphs_MuEE = []
 for ipt_mu, pt_mu in enumerate([4]):
         
-    eff_MuEE = sfile_eff.Get('MuEE_mu' + pt_mu)
-    rate_MuEE = sfile_rate.Get('MuEE_mu' + pt_mu)
+    eff_MuEE = sfile_eff.Get('MuEE_mu' + str(pt_mu))
+    rate_MuEE = sfile_rate.Get('MuEE_mu' + str(pt_mu))
 
-    graph_MuEE = returnGraph('MuEE_mu' + pt_mu, eff_MuEE, rate_MuEE)
+    graph_MuEE = returnGraph('MuEE_mu' + str(pt_mu), eff_MuEE, rate_MuEE)
     
     graphs_MuEE.append(graph_MuEE)
 
@@ -299,7 +299,7 @@ for ipt1, pt_e1 in enumerate([7,8,9,10]):
     eff_asymEE = sfile_eff.Get('asym_E' + str(pt_e1))
     rate_asymEE = sfile_rate.Get('asym_E' + str(pt_e1))
 
-    graph_asymEE = returnGraph('asym_E' + pt_e1, eff_asymEE, rate_asymEE)
+    graph_asymEE = returnGraph('asym_E' + str(pt_e1), eff_asymEE, rate_asymEE)
     
 
     graphs_asymEE.append(graph_asymEE)
@@ -400,7 +400,7 @@ for graph in graphs_DoubleE_dR:
 
 for graph in graphs_MuEE:
     graph.SetLineColor(6)
-    graph.SetMarkerColor(4)
+    graph.SetMarkerColor(6)
     graph.SetMarkerStyle(24)
     graph.SetMarkerSize(1)
     graph.Write()
@@ -408,9 +408,10 @@ for graph in graphs_MuEE:
     leg.AddEntry(graph, 'mu (p_{T} #geq 4 GeV, #eta < 1.5) + ee (p_{T} #geq X GeV, #eta < 1.0)', 'lep')
 
 
+idx = 0
 for graph in graphs_asymEE:
-    graph.SetLineColor(6)
-    graph.SetMarkerColor(4)
+    graph.SetLineColor(1+idx)
+    graph.SetMarkerColor(1+idx)
     graph.SetMarkerStyle(24)
     graph.SetMarkerSize(1)
     graph.Write()
@@ -421,6 +422,7 @@ for graph in graphs_asymEE:
 
     
 leg.Draw()
+canvas.SaveAs('plots/roc_' + options.type + '.gif')
 canvas.SaveAs('plots/roc_' + options.type + '.pdf')
 ofile.Write()
 ofile.Close()
