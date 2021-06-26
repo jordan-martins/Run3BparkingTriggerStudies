@@ -412,11 +412,12 @@ idx = 0
 for graph in graphs_asymEE:
     graph.SetLineColor(1+idx)
     graph.SetMarkerColor(1+idx)
+    graph.SetLineStyle(2)
     graph.SetMarkerStyle(24)
     graph.SetMarkerSize(1)
     graph.Write()
     graph.Draw('plsame')
-    leg.AddEntry(graph, 'e1 (p_{T} #geq X GeV, #eta < 1.0) + e2 (p_{T} #geq Y GeV, #eta < 1.0), dR < 1', 'lep')
+    leg.AddEntry(graph, 'e1 (p_{T} #geq ' + graph.GetName().replace('asym_E', '') + ' GeV, #eta < 1.0) + e2 (p_{T} #geq Y GeV, #eta < 1.0), dR < 1', 'lep')
 
 
 
