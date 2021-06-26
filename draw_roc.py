@@ -405,7 +405,7 @@ for graph in graphs_MuEE:
     graph.SetMarkerSize(1)
     graph.Write()
     graph.Draw('plsame')
-    leg.AddEntry(graph, 'mu (p_{T} #geq 4 GeV, #eta < 1.5) + ee (p_{T} #geq X GeV, #eta < 1.0)', 'lep')
+    leg.AddEntry(graph, 'mu (p_{T} #geq 4 GeV, #eta < 1.5) + ee (p_{T} #geq X GeV, #eta < 1.5)', 'lep')
 
 
 idx = 0
@@ -419,6 +419,7 @@ for graph in graphs_asymEE:
     graph.Draw('plsame')
     leg.AddEntry(graph, 'e1 (p_{T} #geq ' + graph.GetName().replace('asym_E', '') + ' GeV, #eta < 1.0) + e2 (p_{T} #geq Y GeV, #eta < 1.0), dR < 1', 'lep')
 
+    idx+=1
 
 
     
