@@ -19,7 +19,7 @@ const=Double(2544.*11200)
 
 ptrange = np.arange(3, 11, 1).tolist()
 
-file = TFile('/pnfs/psi.ch/cms/trivcat/store/user/ytakahas/Trigger/job/rate_v3.root')
+file = TFile('/pnfs/psi.ch/cms/trivcat/store/user/ytakahas/Trigger/job/rate.root')
 tree = file.Get('tree')
 
 

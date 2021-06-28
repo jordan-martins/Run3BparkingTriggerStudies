@@ -28,6 +28,22 @@ print options
 colours = [1, 2, 4, 6, 8, 13, 15]
 styles = [1, 2, 4, 3, 5, 1, 1]
 
+drdict = {
+    3:1,
+    4:1,
+    5:1,
+    6:1,
+    7:1,
+    8:0.8,
+    9:0.7,
+    10:0.65,
+    11:0.6,
+    12:0.55,
+    13:0.5,
+    14:0.45,
+}
+
+
 gen_pt  = 'gen_e1_pt > 0.5 && gen_e2_pt > 0.5'
 gen_eta = 'abs(gen_e1_eta) < 2.4 && abs(gen_e2_eta) < 2.4'
 #gen_q2  = '(gen_mass*gen_mass) > 1.1 && (gen_mass*gen_mass) < 6.25'
@@ -136,7 +152,7 @@ ptrange = np.arange(3, 11, 1).tolist()
 graph_singleMu = createGraph('singleMu')
 
 for ipt, pt in enumerate(ptrange):
-    sel = 'singleMu' + str(pt) + '==1'
+    sel = 'singleMu' + str(pt) + '_eta1p5==1'
     fillGraph(sfile, options.type, 'singleMu' + str(pt), sel, gencut, graph_singleMu, ipt, pt)
 
 
@@ -144,7 +160,7 @@ graphs_MuE = []
 for ipt_mu, pt_mu in enumerate([4]):
     graph_MuE = createGraph('Mu' + str(pt_mu))
     for ipt_e, pt_e in enumerate(ptrange):
-        sel = 'singleMu' + str(pt_mu) + '==1 && (e1_pt >= ' + str(pt_e) + ' || e2_pt >= ' + str(pt_e) + ') '
+        sel = 'singleMu' + str(pt_mu) + '_eta1p5==1 && (e1_eta1p0_pt >= ' + str(pt_e) + ' || e2_eta1p0_pt >= ' + str(pt_e) + ') '
 
         fillGraph(sfile, options.type, 'mu' + str(pt_mu) +'_eg' + str(pt_e), sel, gencut, graph_MuE, ipt_e, pt_e)
     graphs_MuE.append(graph_MuE)
@@ -153,8 +169,17 @@ for ipt_mu, pt_mu in enumerate([4]):
 graph_DoubleE_dR = createGraph('DoubleE_dR')
 for ipt_e, pt_e in enumerate(ptrange):
 
-    sel = 'e1_ex_pt >= ' + str(pt_e) + ' && e2_ex_pt >=' + str(pt_e) + ' && e1e2_ex_dr >=0 && e1e2_ex_dr <= 1'
+    sel = 'e1_eta1p0_pt >= ' + str(pt_e) + ' && e2_eta1p0_pt >=' + str(pt_e) + ' && e1e2_eta1p0_dr <= 1'
     fillGraph(sfile, options.type, 'DoubleE' + str(pt_e), sel, gencut, graph_DoubleE_dR, ipt_e, pt_e)
+
+
+graph_DoubleE_dR_dyn = createGraph('DoubleE_dR_dyn')
+for ipt_e, pt_e in enumerate(ptrange):
+
+    sel = 'e1_eta1p0_pt >= ' + str(pt_e) + ' && e2_eta1p0_pt >=' + str(pt_e) + ' && e1e2_eta1p0_dr <= ' + str(drdict[pt_e])
+    print sel
+
+    fillGraph(sfile, options.type, 'dyn_DoubleE' + str(pt_e), sel, gencut, graph_DoubleE_dR_dyn, ipt_e, pt_e)
 
 
 
@@ -162,9 +187,9 @@ graphs_MuEE = []
 for ipt_mu, pt_mu in enumerate([4]):
     graph_MuEE = createGraph('MuEE_mu' + str(pt_mu))
     for ipt_e, pt_e in enumerate(ptrange):
-        sel = 'singleMu' + str(pt_mu) + '==1 && e1_ex1p5_pt >= ' + str(pt_e) + ' && e2_ex1p5_pt >= ' + str(pt_e)
+        sel = 'singleMu' + str(pt_mu) + '_eta2p4==1 && e1_eta2p4_pt >= ' + str(pt_e) + ' && e2_eta2p4_pt >= ' + str(pt_e)
 
-        fillGraph(sfile, options.type, 'mu' + str(pt_mu) +'_DoubleE_eta1p5_' + str(pt_e), sel, gencut, graph_MuEE, ipt_e, pt_e)
+        fillGraph(sfile, options.type, 'mu' + str(pt_mu) +'_eta2p4_DoubleE_eta2p4_' + str(pt_e), sel, gencut, graph_MuEE, ipt_e, pt_e)
 
 
         
@@ -181,8 +206,8 @@ for ipt1, pt_e1 in enumerate([7,8,9,10]):
 
 #        print ipt1, ipt2, pt_e1, pt_e2
 
-        sel = '((e1_ex_pt >= ' + str(pt_e1) + ' && e2_ex_pt >=' + str(pt_e2) + ') || (e1_ex_pt >=' + str(pt_e2) + ' && e2_ex_pt >=' + str(pt_e1) + ')) && e1e2_ex_dr >=0 && e1e2_ex_dr <= 1'
-        fillGraph(sfile, options.type, 'E' + str(pt_e1) +'_E' + str(pt_e2), sel, gencut, graph_asymEE, ipt2, pt_e2)
+        sel = '((e1_eta1p0_pt >= ' + str(pt_e1) + ' && e2_eta1p0_pt >=' + str(pt_e2) + ') || (e1_eta1p0_pt >=' + str(pt_e2) + ' && e2_eta1p0_pt >=' + str(pt_e1) + ')) && e1e2_eta1p0_dr >=0 && e1e2_eta1p0_dr <= 1'
+        fillGraph(sfile, options.type, 'E' + str(pt_e1) +'_eta1p0_E' + str(pt_e2) + '_eta1p0', sel, gencut, graph_asymEE, ipt2, pt_e2)
 
 
         
@@ -200,11 +225,16 @@ for ipt1, pt_e1 in enumerate([7,8,9,10]):
 #    fillGraph(sfile, options.type, 'DoubleE' + str(pt_e), sel, gencut, graph_DoubleE_dR, ipt_e, pt_e)
 
 
+
+if options.type=='rate':
     
-out = TFile('plot_' + options.type + '.root', 'recreate')
+    out = TFile('plot_' + options.type + '_L' + str(options.lumi).replace('.', 'p') + '.root', 'recreate')
+else:
+    out = TFile('plot_' + options.type + '.root', 'recreate')
 
 graph_singleMu.Write()
 graph_DoubleE_dR.Write()
+graph_DoubleE_dR_dyn.Write()
 
 for graph in graphs_MuE:
     graph.Write()
