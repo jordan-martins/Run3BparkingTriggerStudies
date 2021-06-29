@@ -408,14 +408,14 @@ for graph in graphs_DoubleE_dR:
     graph.Draw('plsame')
     leg.AddEntry(graph, 'Double e (p_{T} #geq X GeV, #eta < 1.0) + dR < 1', 'lep')
 
-#for graph in graphs_DoubleE_dR_dyn:
-#    graph.SetLineColor(6)
-#    graph.SetMarkerColor(6)
-#    graph.SetMarkerStyle(24)
-#    graph.SetMarkerSize(1)
-#    graph.Write()
-#    graph.Draw('plsame')
-#    leg.AddEntry(graph, 'Double e (p_{T} #geq X GeV, #eta < 1.0) + dR dynamic', 'lep')
+for graph in graphs_DoubleE_dR_dyn:
+    graph.SetLineColor(6)
+    graph.SetMarkerColor(6)
+    graph.SetMarkerStyle(24)
+    graph.SetMarkerSize(1)
+    graph.Write()
+    graph.Draw('plsame')
+    leg.AddEntry(graph, 'Double e (p_{T} #geq X GeV, #eta < 1.0) + dR dynamic', 'lep')
 
 
 
@@ -429,21 +429,21 @@ for graph in graphs_DoubleE_dR:
 #    leg.AddEntry(graph, 'mu (p_{T} #geq 4 GeV, #eta < 2.4) + Double e (p_{T} #geq X GeV, #eta < 2.4)', 'lep')
 
 
-idx = 0
-
-colors = [1, 6, 8, 2]
-
-for graph in graphs_asymEE:
-    graph.SetLineColor(colors[idx])
-    graph.SetMarkerColor(colors[idx])
-    graph.SetLineStyle(2)
-    graph.SetMarkerStyle(24)
-    graph.SetMarkerSize(1)
-    graph.Write()
-    graph.Draw('plsame')
-    leg.AddEntry(graph, 'e1 (p_{T} #geq ' + graph.GetName().replace('asym_E', '') + ' GeV, #eta < 1.0) + e2 (p_{T} #geq Y GeV, #eta < 1.0), dR < 1', 'lep')
-
-    idx+=1
+###idx = 0
+###
+###colors = [1, 6, 8, 2]
+###
+###for graph in graphs_asymEE:
+###    graph.SetLineColor(colors[idx])
+###    graph.SetMarkerColor(colors[idx])
+###    graph.SetLineStyle(2)
+###    graph.SetMarkerStyle(24)
+###    graph.SetMarkerSize(1)
+###    graph.Write()
+###    graph.Draw('plsame')
+###    leg.AddEntry(graph, 'e1 (p_{T} #geq ' + graph.GetName().replace('asym_E', '') + ' GeV, #eta < 1.0) + e2 (p_{T} #geq Y GeV, #eta < 1.0), dR < 1', 'lep')
+###
+###    idx+=1
 
 
     
