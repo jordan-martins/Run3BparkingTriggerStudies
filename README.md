@@ -11,6 +11,7 @@ cd CMSSW_11_1_0/src
 clone the repository: 
 ```
 git clone git@github.com:gitytakahas/Run3BparkingTriggerStudies.git
+git checkout forJordan
 ```
 
 
@@ -22,5 +23,5 @@ Produce ntuples:
 python genstudy_l1.py
 ```
 
-
+You can then add whatever you want ... 
 
