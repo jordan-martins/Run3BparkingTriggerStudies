@@ -16,7 +16,7 @@ class TreeProducerGen(TreeProducerCommon):
         self.addBranch('nmuons_eta1p5',                  'i')
         self.addBranch('nmuons_eta2p4',                  'i')
         
-        self.addBranch('nelectrons_eta1p0',                  'i')
+        self.addBranch('nelectrons_eta1p2',                  'i')
         self.addBranch('nelectrons_eta1p5',                  'i')
         self.addBranch('nelectrons_eta2p4',                  'i')
 
@@ -30,7 +30,7 @@ class TreeProducerGen(TreeProducerCommon):
 #        self.addBranch('e2_eta',                  'f')
 #        self.addBranch('e2_phi',                  'f')
 
-        for eta in ['eta1p0', 'eta1p5', 'eta2p4']:
+        for eta in ['eta1p2', 'eta1p5', 'eta2p4']:
             self.addBranch('e1_' + eta + '_pt',                  'f')
             self.addBranch('e1_' + eta + '_eta',                  'f')
             self.addBranch('e1_' + eta + '_phi',                  'f')
