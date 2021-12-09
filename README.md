@@ -34,10 +34,13 @@ python genstudy_l1.py
 
 ## Produce ntuples for the rate study 
 
+Please first check what is written at: https://twiki.cern.ch/twiki/bin/view/CMS/HowToL1TriggerMenu#2_General_steps_of_L1_menu_studi
+
 Produce ntuples:
 ```
 python rate.py
 ```
+
 
 In both efficiency and the rate study, you can add jet object ... (for this you need to investigate how to derive Level-1 jet object).
 
